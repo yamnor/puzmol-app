@@ -1,7 +1,7 @@
 import threading
 
-#import os
-#os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
+import os
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
 import streamlit as st
 from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
@@ -216,7 +216,7 @@ def show_properties(smi):
 def main():
 
   st.set_page_config(
-    page_title = 'PuzMol App',
+    page_title = 'PuzMol',
     #page_icon = 'logo2.png',
     initial_sidebar_state = 'auto')
 
@@ -239,10 +239,32 @@ def main():
       return av.VideoFrame.from_ndarray(img, format="bgr24")
 
   with st.sidebar:
-    st.title("About")
-    st.sidebar.info(
+
+    st.title('About')
+
+    st.markdown(
       """
-      This web app is maintained by [Norifumi Yamamoto](https://twitter.com/yamnor).
+      Paper-craft molecular model can be read with a camera
+      to convert it into 2D & 3D structures and predict its basic chemical properties.
+
+      * The **green**, **red**, and **blue** lines shown on the video screen represent
+        **single**, **double**, and **triple** bonds, respectively.
+      """)
+
+    st.warning(
+      """
+      This web app is hosted on a cloud server ([Streamlit Cloud](https://streamlit.io/))
+      and videos are sent to the server for processing.
+      
+      No data is stored, everything is processed in memory and discarded,
+      but if this is a concern for you, please refrain from using this service.
+      """
+    )
+
+    st.info(
+      """
+      This web app is maintained by [Norifumi Yamamoto (@yamnor)](https://twitter.com/yamnor).
+      
       You can follow me on social media:
       [GitHub](https://github.com/yamnor) | 
       [LinkedIn](https://www.linkedin.com/in/yamnor) | 
@@ -251,22 +273,14 @@ def main():
 
   st.title("PuzMol")
 
-  st.markdown(
-    """
-    Paper-craft molecular model assembled like a puzzle can be read with a camera
-    to convert it into 2D & 3D structures and predict its chemical properties.
-    """)
+  #with st.expander("Webcam Live Feed", expanded = True):
+  ctx = webrtc_streamer(
+    key = "puzmol",
+    media_stream_constraints = {"video": True, "audio": False},
+    video_processor_factory = VideoProcessor,
+    rtc_configuration = {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]})
 
-  with st.expander("Webcam Live Feed", expanded = True):
-    ctx = webrtc_streamer(
-      key = "puzmol",
-      media_stream_constraints = {"video": True, "audio": False},
-      video_processor_factory = VideoProcessor,
-      rtc_configuration = {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]})
-    st.markdown(
-      """
-      The <span style='color=#00ff00'>green</span>, red, and blue lines represent single, double, and triple bonds, respectively.
-      """)
+  st.markdown("---")
 
   if ctx.video_processor:
 
