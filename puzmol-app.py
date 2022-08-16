@@ -265,7 +265,7 @@ def main():
       rtc_configuration = {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]})
     st.markdown(
       """
-      The green, red, and blue lines represent single, double, and triple bonds, respectively.
+      The <span style='color=#00ff00'>green</span>, red, and blue lines represent single, double, and triple bonds, respectively.
       """)
 
   if ctx.video_processor:
