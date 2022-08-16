@@ -1,13 +1,15 @@
 import os
 import threading
 
-os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
+#os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
 import streamlit as st
 from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
 
 import av
 import cv2
+
+from PIL import Image
 
 import torch
 import numpy as np
@@ -16,8 +18,6 @@ import math
 
 from rdkit import Chem
 from rdkit.Chem import AllChem, Draw, Descriptors
-
-from PIL import Image
 
 import py3Dmol
 from stmol import showmol
@@ -233,18 +233,32 @@ def main():
         self.smi = smi
       return av.VideoFrame.from_ndarray(img, format="bgr24")
 
+
+  with st.sidebar:
+    st.title("About")
+    st.sidebar.info(
+      """
+      This web app is maintained by [Norifumi Yamamoto](https://twitter.com/yamnor).
+      You can follow me on social media:
+      [GitHub](https://github.com/yamnor) | 
+      [LinkedIn](https://www.linkedin.com/in/yamnor) | 
+      [WebSite](https://yamlab.net).
+      """)
+
   st.title("PuzMol")
 
   st.markdown(
-    "[PuzMol](https://note.com/yamnor/n/n95d3cc013d4a), paper-craft molecular model, can be converted into 3D structure, etc.")
+    """
+    [PuzMol](https://note.com/yamnor/n/n95d3cc013d4a), paper-craft molecular model,
+    can be converted into 2D & 3D structures and its basic chemical properties.
+    """)
 
   with st.expander("Webcam Live Feed", expanded = True):
     ctx = webrtc_streamer(
       key = "puzmol",
       media_stream_constraints = {"video": True, "audio": False},
       video_processor_factory = VideoProcessor,
-      rtc_configuration = {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
-      )
+      rtc_configuration = {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]})
 
   if ctx.video_processor:
 
@@ -259,7 +273,11 @@ def main():
           st.markdown("---")
           st.subheader('SMILES')
           st.code(smi)
-          st.markdown("[SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system) is a specification for describing the chemical structure of molecules using short strings.")          
+          st.markdown(
+            """
+            [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system)
+            is a specification for describing the chemical structure of molecules using short strings.
+            """)
           st.markdown("---")
           st.subheader('2D View')
           show_2dview(smi)
