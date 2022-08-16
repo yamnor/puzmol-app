@@ -1,7 +1,7 @@
 import threading
 
-import os
-os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
+#import os
+#os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
 import streamlit as st
 from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
