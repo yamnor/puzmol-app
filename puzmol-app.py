@@ -1,6 +1,6 @@
-import os
 import threading
 
+#import os
 #os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
 import streamlit as st
@@ -33,35 +33,6 @@ bondtype = {
   'double' : 2,
   'triple' : 3}
 
-def adj2mol(atom, adjmat):
-  natoms = len(atom)
-  mol = Chem.RWMol()
-  idx = {}
-  for i in range(natoms):
-    idx[i] = mol.AddAtom(Chem.Atom(atom[i]))
-  for i in range(natoms):
-    for j in range(i + 1, natoms):
-      aij = adjmat[i, j]
-      if aij == 0:
-        continue
-      elif aij == 1:
-        mol.AddBond(idx[i], idx[j], Chem.rdchem.BondType.SINGLE)
-      elif aij == 2:
-        mol.AddBond(idx[i], idx[j], Chem.rdchem.BondType.DOUBLE)
-      elif aij == 2:
-        mol.AddBond(idx[i], idx[j], Chem.rdchem.BondType.TRIPLE)
-  return mol.GetMol()
-
-def smi2mol(smi):
-  mol = Chem.MolFromSmiles(smi)
-  if mol is not None:
-    mol = Chem.AddHs(mol)
-    AllChem.EmbedMolecule(mol)
-    AllChem.MMFFOptimizeMolecule(mol, maxIters = 200)
-    return mol
-  else:
-    return None
-
 def draw_text(img, txt, xy):
   face = cv2.FONT_HERSHEY_PLAIN
   size = 2
@@ -91,6 +62,35 @@ def draw_atom(img, atom):
   natoms = len(atom['type'])
   for i in range(natoms):
     draw_text(img, atom['type'][i], atom['geom'][i])
+
+def adj2mol(atom, adjmat):
+  natoms = len(atom)
+  mol = Chem.RWMol()
+  idx = {}
+  for i in range(natoms):
+    idx[i] = mol.AddAtom(Chem.Atom(atom[i]))
+  for i in range(natoms):
+    for j in range(i + 1, natoms):
+      aij = adjmat[i, j]
+      if aij == 0:
+        continue
+      elif aij == 1:
+        mol.AddBond(idx[i], idx[j], Chem.rdchem.BondType.SINGLE)
+      elif aij == 2:
+        mol.AddBond(idx[i], idx[j], Chem.rdchem.BondType.DOUBLE)
+      elif aij == 2:
+        mol.AddBond(idx[i], idx[j], Chem.rdchem.BondType.TRIPLE)
+  return mol.GetMol()
+
+def smi2mol(smi):
+  mol = Chem.MolFromSmiles(smi)
+  if mol is not None:
+    mol = Chem.AddHs(mol)
+    AllChem.EmbedMolecule(mol)
+    AllChem.MMFFOptimizeMolecule(mol, maxIters = 200)
+    return mol
+  else:
+    return None
 
 def img2smi(img, model):
 
@@ -215,6 +215,11 @@ def show_properties(smi):
 
 def main():
 
+  st.set_page_config(
+    page_title = 'PuzMol App',
+    #page_icon = 'logo2.png',
+    initial_sidebar_state = 'auto')
+
   class VideoProcessor:
     frame_lock: threading.Lock
     smi: None
@@ -233,7 +238,6 @@ def main():
         self.smi = smi
       return av.VideoFrame.from_ndarray(img, format="bgr24")
 
-
   with st.sidebar:
     st.title("About")
     st.sidebar.info(
@@ -245,7 +249,7 @@ def main():
       [WebSite](https://yamlab.net).
       """)
 
-  st.title("PuzMol")
+  st.title("PuzMol App")
 
   st.markdown(
     """
@@ -271,6 +275,7 @@ def main():
 
         if smi is not None:          
           st.markdown("---")
+
           st.subheader('SMILES')
           st.code(smi)
           st.markdown(
@@ -278,15 +283,22 @@ def main():
             [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system)
             is a specification for describing the chemical structure of molecules using short strings.
             """)
+
           st.markdown("---")
+
           st.subheader('2D View')
           show_2dview(smi)
+
           st.markdown("---")
+
           st.subheader('3D View')
           show_3dview(smi)
+
           st.markdown("---")
+
           st.subheader('Properties')
           show_properties(smi)
+
           st.markdown("---")
         else:
           st.warning("No frames available yet.")
