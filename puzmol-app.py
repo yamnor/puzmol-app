@@ -249,12 +249,12 @@ def main():
       [WebSite](https://yamlab.net).
       """)
 
-  st.title("PuzMol App")
+  st.title("PuzMol")
 
   st.markdown(
     """
-    [PuzMol](https://note.com/yamnor/n/n95d3cc013d4a), paper-craft molecular model,
-    can be converted into 2D & 3D structures and its basic chemical properties.
+    Paper-craft molecular model assembled like a puzzle can be read with a camera
+    to convert it into 2D & 3D structures and predict its chemical properties.
     """)
 
   with st.expander("Webcam Live Feed", expanded = True):
@@ -263,6 +263,10 @@ def main():
       media_stream_constraints = {"video": True, "audio": False},
       video_processor_factory = VideoProcessor,
       rtc_configuration = {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]})
+    st.markdown(
+      """
+      The green, red, and blue lines represent single, double, and triple bonds, respectively.
+      """)
 
   if ctx.video_processor:
 
