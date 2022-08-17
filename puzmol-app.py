@@ -1,7 +1,7 @@
 import threading
 
-#import os
-#os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
+import os
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
 import streamlit as st
 from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
@@ -244,7 +244,7 @@ def main():
 
     st.markdown(
       """
-      Paper-craft molecular model can be read with a camera
+      Paper-craft molecular model can be captured with a web camera
       to convert it into 2D & 3D structures and predict its basic chemical properties.
 
       * The **green**, **red**, and **blue** lines shown on the video screen represent
@@ -280,11 +280,11 @@ def main():
     video_processor_factory = VideoProcessor,
     rtc_configuration = {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]})
 
-  st.markdown("---")
-
   if ctx.video_processor:
 
-    st.markdown("Click **Smile!**, when the detected structure is OK.")
+    st.markdown("---")
+
+    st.markdown("Click **Smile!**, if you are satisfied with the detected chemical structure of your molecule.")
 
     if st.button("Smile!"):
 
