@@ -258,8 +258,7 @@ def main():
       
       No data is stored, everything is processed in memory and discarded,
       but if this is a concern for you, please refrain from using this service.
-      """
-    )
+      """)
 
     st.info(
       """
