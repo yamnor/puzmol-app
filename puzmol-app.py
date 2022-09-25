@@ -300,16 +300,16 @@ def main():
             [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system)
             is a specification for describing the chemical structure of molecules using short strings.
             """)
-
-          st.markdown("---")
-
-          st.subheader('2D View')
-          show_2dview(smi)
-
+          
           st.markdown("---")
 
           st.subheader('3D View')
           show_3dview(smi)
+
+          st.markdown("---")
+
+          st.subheader('Chemical Structure')
+          show_2dview(smi)
 
           st.markdown("---")
 
